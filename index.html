@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>原神·枫丹编年史</title>
+    <style>
+        :root {
+            --primary-bg: linear-gradient(90deg, #e3f2fd 0%, #fce4ec 100%);
+            --text-color: #1a237e;
+            --nav-bg: rgba(255, 255, 255, 0.92);
+            --table-border: rgba(144, 202, 249, 0.3);
+            --table-bg: rgba(255, 255, 255, 0.6);
+            --shadow-color: rgba(100, 100, 100, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: linear-gradient(90deg, #0a1f3d 0%, #2a0a28 100%);
+            --text-color: #d7e4f5;
+            --nav-bg: rgba(25, 25, 112, 0.85);
+            --table-border: rgba(74, 20, 140, 0.4);
+            --table-bg: rgba(0, 0, 0, 0.25);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', '微软雅黑', sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-color);
+            line-height: 1.8;
+            transition: all 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            backdrop-filter: blur(12px);
+            background: var(--nav-bg);
+            padding: 14px 24px;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .theme-toggle {
+            padding: 8px 20px;
+            border-radius: 24px;
+            border: 1px solid var(--text-color);
+            background: transparent;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 96px auto 40px;
+            padding: 0 24px;
+        }
+
+        h1 { 
+            font-size: 2.8rem; 
+            margin-bottom: 2.4rem;
+            letter-spacing: -0.03em;
+        }
+
+        h2 { 
+            color: var(--text-color); 
+            border-bottom: 2px solid;
+            padding-bottom: 0.6rem;
+            margin-top: 2.4rem;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2.4rem 0;
+            background: var(--table-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--table-border);
+        }
+
+        th {
+            background: var(--table-bg);
+            font-weight: 600;
+        }
+
+        th, td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--table-border);
+            text-align: left;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <nav class="nav">
+        <h2 style="font-weight: 600;margin:0;">原神·枫丹纪事</h2>
+        <button class="theme-toggle" onclick="toggleTheme()">昼夜切换</button>
+    </nav>
+
+    <div class="container">
+        <h1>枫丹文明演进史</h1>
+        
+        <h2>水之文明的起源</h2>
+        <p>作为提瓦特水元素力的中心，枫丹的文明建立在「厄歌莉娅」创造的纯水精灵体系之上...</p>
+
+        <h2>蒸汽革命与律法体系</h2>
+        <p>工业革命时期，枫丹工程师成功将水元素力转化为「芒荒能量」，推动机械文明跨越式发展...</p>
+
+        <h2>现代枫丹现状</h2>
+        <table>
+            <tr><th>领域</th><th>发展现状</th><th>核心技术</th></tr>
+            <tr><td>能源系统</td><td>全域清洁能源覆盖</td><td>芒荒永动机</td></tr>
+            <tr><td>司法体系</td><td>AI审判覆盖率98%</td><td>谕示裁定机γ型</td></tr>
+            <tr><td>文化艺术</td><td>全息剧院普及化</td><td>水形幻影系统</td></tr>
+        </table>
+
+        <h2>未来挑战</h2>
+        <p>预言中的「水面上升」危机迫使枫丹加速「方舟计划」实施，水下都市「珀西芙」正在...</p>
+    </div>
+
+    <script>
+        // 优化后的昼夜模式切换
+        function toggleTheme() {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            document.body.setAttribute('data-theme', isDark ? '' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        }
+
+        // 初始化主题
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+        }
+
+        // 粒子系统优化
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.radius = Math.random() * 2 + 1;
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 6,
+                    y: (Math.random() - 0.5) * 6 - 2
+                };
+                this.alpha = 1;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update(ctx) {
+                this.draw(ctx);
+                this.velocity.y += 0.1;
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= 0.015;
+            }
+        }
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                if(p.alpha > 0) p.update(ctx);
+                else particles.splice(i, 1);
+            });
+        }
+
+        document.addEventListener('touchstart', (e) => {
+            const colors = document.body.getAttribute('data-theme') === 'dark' 
+                ? ['#4a86e8', '#ff9d5c', '#ff7eb6'] 
+                : ['#2196F3', '#FF9800', '#E91E63'];
+                
+            for(let i = 0; i < 35; i++) {
+                particles.push(new Particle(
+                    e.touches[0].clientX,
+                    e.touches[0].clientY,
+                    colors[Math.floor(Math.random() * colors.length)]
+                ));
+            }
+        });
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animate();
+    </script>
+</body>
+</html>
